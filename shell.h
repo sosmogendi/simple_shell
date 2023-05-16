@@ -3,11 +3,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 
-#define PROMPT "#cisfun$ "
-#define BUFFER_SIZE 1024
+extern char **environ;
 
-#endif
+#define MAX_INPUT_LINE 1024
+#define MAX_ARGS 64
+
+char **parse_command(char *command_line);
+char **split_line(char *line);
+int execute_command(char **args);
+void execute_command_path(char **args);
+void print_environment(void);
+
+
+#endif /* SHELL_H */
