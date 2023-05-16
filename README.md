@@ -1,15 +1,13 @@
 # **Simple Shell**
 A simple command-line interpreter program written in C language.
 
-# **Usage**
+ **Usage**
 To use the simple shell program, execute the compiled binary file with the following command:
 
-shell
-Copy code
 $ ./shell
 This will start the program and display a prompt for the user to enter a command.
 
-# **Functionality**
+ **Functionality**
 The simple shell program supports the following features:
 
 Displays a prompt for the user to enter a command.
@@ -26,8 +24,6 @@ Cursor movement.
 Example Usage
 Here is an example of how to use the simple shell program:
 
-shell
-Copy code
 $ ./shell
 \#cisfun$ ls
 \#cisfun$shell
@@ -39,10 +35,10 @@ total 20
 -rw-r--r-- 1 user user  574 Jun  4 14:52 shell.c
 -rw-r--r-- 1 user user 1023 Jun  4 14:52 shell.h
 \#cisfun$ exit
-# **Requirements**
+ **Requirements**
 The simple shell program follows the Betty style guide for C programming. It has been checked using betty-style.pl and betty-doc.pl scripts.
 
 The program uses the execve() system call to execute commands, and passes the environ variable to it.
 
-# **Authors**
+ **Authors**
 This simple shell program was created by Sospeter Nyabuto and Janet Oluoch
