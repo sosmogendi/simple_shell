@@ -1,44 +1,68 @@
 #include "shell.h"
 
+/* global variable for ^C handling */
+unsigned int signum_flag;
+
 /**
- * main - start point
- * @ac: counts arguments
- * @av: arg vector
+ * sig_handler - handles ^C signal interupt
+ * @uuv: unused variable (required for signal function prototype)
  *
- * Return: 0 on success, 1 on error
+ * Return: void
  */
-int main(int ac, char **av)
+static void sig_handler(int sig)
 {
-	info_t info[] = { INFO_INIT };
-	int gh = 2;
+	(void) sig;
+	if (signum_flag == 0)
+		_puts("\n$ ");
+	else
+		_puts("\n");
+}
 
-	asm ("mov %1, %0\n\t"
-		"add $3, %0"
-		: "=r" (gh)
-		: "r" (gh));
+/**
+ * main - main function for the shell
+ * @argc: number of arguments passed to main
+ * @argv: array of arguments passed to main
+ * @environment: array of environment variables
+ *
+ * Return: 0 or exit status
+ */
+int main(int argc __attribute__((unused)), char **argv, char **environm)
+{
+	size_t len_buf = 0;
+	unsigned int is_pipe2 = 0, i;
+	vars_t vars = {NULL, NULL, NULL, 0, NULL, 0, NULL};
 
-	if (ac == 2)
+	vars.argv = argv;
+	vars.env = make_env(environm);
+	signal(SIGINT, sig_handler);
+	if (!isatty(STDIN_FILENO))
+		is_pipe2 = 1;
+	if (is_pipe2 == 0)
+		_puts("$ ");
+	signum_flag = 0;
+	while (getline(&(vars.buffer), &len_buf, stdin) != -1)
 	{
-		gh = open(av[1], O_RDONLY);
-		if (gh == -1)
+		signum_flag = 1;
+		vars.sum++;
+		vars.commands = tokenize(vars.buffer, ";");
+		for (i = 0; vars.commands && vars.commands[i] != NULL; i++)
 		{
-			if (errno == EACCES)
-				exit(126);
-			if (errno == ENOENT)
-			{
-				_eputs(av[0]);
-				_eputs(": 0: Can't open ");
-				_eputs(av[1]);
-				_eputchar('\n');
-				_eputchar(BUF_FLUSH);
-				exit(127);
-			}
-			return (EXIT_FAILURE);
+			vars.av = tokenize(vars.commands[i], "\n \t\r");
+			if (vars.av && vars.av[0])
+				if (check_for_builtins(&vars) == NULL)
+					check_for_path(&vars);
+		free(vars.av);
 		}
-		info->readgh = gh;
+		free(vars.buffer);
+		free(vars.commands);
+		signum_flag = 0;
+		if (is_pipe2 == 0)
+			_puts("$ ");
+		vars.buffer = NULL;
 	}
-	populate_env_list(info);
-	read_history(info);
-	hsh(info, av);
-	return (EXIT_SUCCESS);
+	if (is_pipe2 == 0)
+		_puts("\n");
+	free_env(vars.env);
+	free(vars.buffer);
+	exit(vars.status);
 }
