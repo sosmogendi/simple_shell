@@ -1,28 +1,49 @@
 #include "shell.h"
 
 /**
- * _realloc - reallocates a pointer to double the space
- * @ptr: pointer to the old array
- * @size: pointer to number of elements in the old array
- *
- * Return: pointer to the new array
+ * free_dp - frees all the memory allocated for command.
+ * @command: pointer to allocated memory to free.
+ * Return: Nothing.
  */
-char **_realloc(char **ptr, size_t *size)
+void free_dp(char **command)
 {
-	char **new_m;
-	size_t f;
+	size_t e = 0;
 
-	new_m = malloc(sizeof(char *) * ((*size) + 10));
-	if (new_m == NULL)
+	if (command == NULL)
+		return;
+
+	while (command[e])
 	{
-		free(ptr);
-		return (NULL);
+		free(command[e]);
+		e++;
 	}
-	for (f = 0; f < (*size); f++)
+
+	if (command[e] == NULL)
+		free(command[e]);
+	free(command);
+}
+
+
+/**
+ * free_exit - frees all the memory allocated and exit.
+ * @command: pointer to allocated command memory to free.
+ * Return: Nothing.
+ */
+void free_exit(char **command)
+{
+	size_t m = 0;
+
+	if (command == NULL)
+		return;
+
+	while (command[m])
 	{
-		new_m[f] = ptr[f];
+		free(command[m]);
+		m++;
 	}
-	*size += 10;
-	free(ptr);
-	return (new_m);
+
+	if (command[m] == NULL)
+		free(command[m]);
+	free(command);
+	exit(EXIT_FAILURE);
 }
