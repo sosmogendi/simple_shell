@@ -5,7 +5,7 @@
  * @command: The pointer to tokenized command
  * @name: The pointer to the name of shell.
  * @env: The pointer to the enviromental variables.
- * @cicles: Number of executed cicles.
+ * @round: Number of executed round
  * Return: Nothing.
  */
 void new_child(char **command, char *name, char **env, int round)
